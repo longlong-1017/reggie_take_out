@@ -80,8 +80,10 @@ public class CommonController {
             e.printStackTrace();
         }finally {
             try {
-                fileInputStream.close();
-                outputStream.close();
+                if (fileInputStream!=null&&outputStream!=null){
+                    fileInputStream.close();
+                    outputStream.close();
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
