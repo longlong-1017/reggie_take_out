@@ -2,7 +2,7 @@ package com.itheima.reggie.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.itheima.reggie.entiry.Dish;
-import com.itheima.reggie.entiry.DishDto;
+import com.itheima.reggie.dto.DishDto;
 
 import java.util.List;
 

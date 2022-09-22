@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.reggie.common.erro.CustomException;
 import com.itheima.reggie.entiry.Dish;
-import com.itheima.reggie.entiry.DishDto;
+import com.itheima.reggie.dto.DishDto;
 import com.itheima.reggie.entiry.DishFlavor;
 import com.itheima.reggie.mapper.DishMapper;
 import com.itheima.reggie.service.DishFlavorService;

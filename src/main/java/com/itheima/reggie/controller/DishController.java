@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.reggie.common.R;
 import com.itheima.reggie.entiry.Category;
 import com.itheima.reggie.entiry.Dish;
-import com.itheima.reggie.entiry.DishDto;
+import com.itheima.reggie.dto.DishDto;
 import com.itheima.reggie.entiry.DishFlavor;
 import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.DishFlavorService;
@@ -115,5 +115,38 @@ public class DishController {
         log.info("删除菜品，ids为{}",ids);
         dishService.removeWithIds(ids);
         return R.success("删除菜品成功");
+    }
+
+    /*
+    * http://localhost:8080/dish/list?categoryId=1568557684465090562
+    * */
+    @GetMapping("/list")
+    public R<List<DishDto>> list(Dish dish){
+        //构造查询条件
+        LambdaQueryWrapper<Dish> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        queryWrapper.eq(Dish::getStatus,1);
+        //添加排序条件
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list=dishService.list(queryWrapper);
+        List<DishDto> dishDtoList=list.stream().map((item)->{
+            DishDto dishDto=new DishDto();
+            BeanUtils.copyProperties(item,dishDto);
+
+            Long categoryId = item.getCategoryId();//分类id
+            Category category=categoryService.getById(categoryId);
+            if (category!=null){
+                dishDto.setCategoryName(category.getName());
+            }
+            //当前菜品的id
+            Long dishId=item.getId();
+            LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(DishFlavor::getDishId,dishId);
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(lambdaQueryWrapper);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+
+        return R.success(dishDtoList);
     }
 }
